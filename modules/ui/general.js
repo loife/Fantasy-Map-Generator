@@ -1,6 +1,8 @@
 "use strict";
 // Module to store generic UI functions
 
+let selectedCell = null;
+
 window.addEventListener("resize", function (e) {
   if (stored("mapWidth") && stored("mapHeight")) return;
   mapWidthInput.value = window.innerWidth;
@@ -84,6 +86,7 @@ function handleMouseMove() {
   if (tooltip.dataset.main) showMainTip();
   else showMapTooltip(point, d3.event, i, gridCell);
   if (cellInfo?.offsetParent) updateCellInfo(point, i, gridCell);
+  if (cellStatesInfo?.offsetParent) updateCellStatesInfo(point, i, gridCell);
 }
 
 let currentNoteId = null; // store currently displayed node to not rerender to often
@@ -255,17 +258,62 @@ function highlightEditorLine(editor, id, timeout = 10000) {
     }, timeout);
 }
 
+function updateCellStatesInfo(point, i, g){
+  statesInfoX.innerHTML = rn(point[0]);
+  statesInfoY.innerHTML = rn(point[1]);
+  statesInfoCell.innerHTML = i;
+}
+
+function clearSelectedCell(){
+  selectedCell = null;
+  statesSelectedInfoX.innerHTML = '';
+  statesSelectedInfoY.innerHTML = '';
+  statesSelectedInfoCell.innerHTML = '';
+}
+
+function updateSelectedCell(point, i){
+  saveStatesDetails()
+  const cells = pack.cells;
+
+  selectedCell = i;
+  statesSelectedInfoX.innerHTML = rn(point[0]);
+  statesSelectedInfoY.innerHTML = rn(point[1]);
+  statesSelectedInfoCell.innerHTML = i;
+
+
+  cellStatesDescription.value = cells.statesGameInformation.description[i];
+  roll1.value = cells.statesGameInformation.roll1[selectedCell];
+  roll2.value = cells.statesGameInformation.roll2[selectedCell];
+  roll3.value = cells.statesGameInformation.roll3[selectedCell];
+  
+}
+
+function saveStatesDetails(){  
+  if(selectedCell === null) return;
+
+  const cells = pack.cells;
+
+  cells.statesGameInformation.description[selectedCell] = cellStatesDescription.value;
+  cells.statesGameInformation.roll1[selectedCell] = roll1.value;
+  cells.statesGameInformation.roll2[selectedCell] = roll2.value;
+  cells.statesGameInformation.roll3[selectedCell] = roll3.value;
+
+}
+
 // get cell info on mouse move
 function updateCellInfo(point, i, g) {
   const cells = pack.cells;
   const x = (infoX.innerHTML = rn(point[0]));
+
   const y = (infoY.innerHTML = rn(point[1]));
+
   const f = cells.f[i];
   infoLat.innerHTML = toDMS(getLatitude(y, 4), "lat");
   infoLon.innerHTML = toDMS(getLongitude(x, 4), "lon");
   infoGeozone.innerHTML = getGeozone(getLatitude(y, 4));
 
   infoCell.innerHTML = i;
+
   infoArea.innerHTML = cells.area[i] ? si(getArea(cells.area[i])) + " " + getAreaUnit() : "n/a";
   infoElevation.innerHTML = getElevation(pack.features[f], pack.cells.h[i]);
   infoDepth.innerHTML = getDepth(pack.features[f], point);

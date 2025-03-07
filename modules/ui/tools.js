@@ -2,6 +2,7 @@
 
 // module to control the Tools options (click to edit, to re-geenerate, tp add)
 
+
 toolsContent.addEventListener("click", function (event) {
   if (customization) return tip("Please exit the customization mode first", false, "error");
   if (!["BUTTON", "I"].includes(event.target.tagName)) return;
@@ -27,6 +28,7 @@ toolsContent.addEventListener("click", function (event) {
   else if (button === "overviewMilitaryButton") overviewMilitary();
   else if (button === "overviewMarkersButton") overviewMarkers();
   else if (button === "overviewCellsButton") viewCellDetails();
+  else if (button === "editCellStatesInfoButton") viewStatesInfoEditor();
 
   // click on Regenerate buttons
   if (event.target.parentNode.id === "regenerateFeature") {
@@ -966,4 +968,17 @@ function viewCellDetails() {
 async function overviewCharts() {
   const Overview = await import("../dynamic/overview/charts-overview.js?v=1.99.00");
   Overview.open();
+}
+
+function viewStatesInfoEditor() {
+  $("#cellStatesInfo").dialog({
+    resizable: true,
+    width: "30em",
+    title: "States Cell Editor",
+    position: {my: "right top", at: "right-10 top+10", of: "svg", collision: "fit"},
+    close: function (){
+      saveStatesDetails();
+      clearSelectedCell();
+    }
+  });
 }

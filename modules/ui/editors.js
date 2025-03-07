@@ -20,6 +20,13 @@ function clicked() {
   const ancestor = great?.parentElement;
   if (!ancestor) return;
 
+  const p = d3.mouse(this);
+  const i = findCell(p[0], p[1]);
+
+
+  // selectedCell is global in tools.js
+  if (cellStatesInfo?.offsetParent) updateSelectedCell(p, i)
+
   if (grand.id === "emblems") editEmblem();
   else if (parent.id === "rivers") editRiver(el.id);
   else if (grand.id === "routes") editRoute(el.id);

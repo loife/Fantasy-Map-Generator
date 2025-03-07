@@ -115,7 +115,7 @@ function uploadMap(file, callback) {
     const result = fileLoadedEvent.target.result;
     const {mapData, mapVersion} = await parseLoadedResult(result);
 
-    const isInvalid = !mapData || !isValidVersion(mapVersion) || mapData.length < 10 || !mapData[5];
+    const isInvalid = !mapData || !isValidVersion(mapVersion) || mapData.length < 26 || !mapData[5];
     if (isInvalid) return showUploadMessage("invalid", mapData, mapVersion);
 
     const isUpdated = compareVersions(mapVersion, VERSION).isEqual;
@@ -406,6 +406,9 @@ async function parseLoadedData(data, mapVersion) {
       pack.cells.province = data[27] ? Uint16Array.from(data[27].split(",")) : new Uint16Array(pack.cells.i.length);
       // data[28] had deprecated cells.crossroad
       pack.cells.routes = data[36] ? JSON.parse(data[36]) : {};
+
+      data[39] ? pack.cells.statesGameInformation = JSON.parse(data[39]) : initializeStatesDetails();
+      
 
       if (data[31]) {
         const namesDL = data[31].split("/");

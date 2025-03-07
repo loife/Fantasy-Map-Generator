@@ -647,6 +647,9 @@ async function generate(options) {
     Rivers.generate();
     Biomes.define();
 
+
+    initializeStatesDetails();
+
     rankCells();
     Cultures.generate();
     Cultures.expand();
@@ -694,6 +697,19 @@ async function generate(options) {
       },
       position: {my: "center", at: "center", of: "svg"}
     });
+  }
+}
+
+function initializeStatesDetails(){
+  pack.cells.statesGameInformation = {
+    "description" : new Array(pack.cells.i.length),
+    "roll1" : new Uint8Array(pack.cells.i.length),
+    "roll2" : new Uint8Array(pack.cells.i.length),
+    "roll3" : new Uint8Array(pack.cells.i.length)
+  }
+
+  for(let i = 0; i < pack.cells.i.length; i++){
+    pack.cells.statesGameInformation.description[i] = '';
   }
 }
 

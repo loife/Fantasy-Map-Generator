@@ -155,7 +155,8 @@ function prepareMapData() {
     markers,
     cellRoutes,
     routes,
-    zones
+    zones,
+    JSON.stringify(pack.cells.statesGameInformation),
   ].join("\r\n");
   return mapData;
 }
